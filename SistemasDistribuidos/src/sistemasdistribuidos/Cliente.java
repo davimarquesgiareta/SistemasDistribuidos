@@ -1,9 +1,11 @@
+package sockets.thread;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sistemasdistribuidos;
+
 
 import java.io.*;
 import java.net.Socket;
@@ -115,6 +117,10 @@ public class Cliente {
                 if (kind == ENTRY_DELETE){
                   mandarDiretorio(child,"deletar");
                 }
+                
+                if (kind == ENTRY_MODIFY){
+                mandarDiretorio(child,"modificar");
+                }
             }
                 
  
@@ -150,25 +156,40 @@ public class Cliente {
     public static void mandarDiretorio(Path child , String estado) throws IOException{
                         System.out.println("o child é : "+child);
                         System.out.println("o estado é: "+estado);
-                        Socket socket = new Socket("127.0.0.1", 54323);
+                        Socket socket = new Socket("127.0.0.1", 54322);
                         
                         String diretorio = child.toString();
         
                         //2 - Definir stream de saÃ­da de dados do cliente
+                        
+                        //************* SAIDAAAASSS ************************
                         DataOutputStream saida = new DataOutputStream(socket.getOutputStream());
                         saida.writeUTF(diretorio); //Enviar  mensagem em minÃºsculo para o servidor
+                        
+                        DataOutputStream saida2 = new DataOutputStream(socket.getOutputStream());
+                        saida2.writeUTF(estado); //Enviar  mensagem em minÃºsculo para o servidor
+                        // *************************************************
 
                         //3 - Definir stream de entrada de dados no cliente
+                        //*********** O QUE TA VINDO DE VOLTA DO SERVIDOR ********************
                         DataInputStream entrada = new DataInputStream(socket.getInputStream());
                         String novaMensagem = entrada.readUTF();//Receber mensagem em maiÃºsculo do servidor
                         System.out.println(novaMensagem); //Mostrar mensagem em maiÃºsculo no cliente
-
+                        
+                        DataInputStream entrada2 = new DataInputStream(socket.getInputStream());
+                        String novaMensagem2 = entrada2.readUTF();//Receber mensagem em maiÃºsculo do servidor
+                        System.out.println(novaMensagem2); //Mostrar mensagem em maiÃºsculo no cliente
+                        //***********************************************************************
+                        
+                        
                         //4 - Fechar streams de entrada e saÃ­da de dados
                         entrada.close();
+                        entrada2.close();
                         saida.close();
-
+                        saida2.close();
+                        
                         //5 - Fechar o socket
-                       // socket.close();
+                        socket.close();
                          //--------- FIM PARTE DO SOCKET ----------//
     }
 }
