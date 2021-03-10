@@ -1,4 +1,4 @@
-package sockets.thread;
+package sistemasdistribuidos;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -141,7 +141,7 @@ public class Cliente {
     
     public static void main(String[] args) throws IOException {
         
-        Path dir = Paths.get("C:\\Users\\davim\\Desktop\\pastatestes");
+        Path dir = Paths.get("C:\\Users\\luizg\\Desktop\\pastatestes");
         new Cliente(dir).processEvents();
 
 

@@ -1,4 +1,4 @@
-package sockets.thread;
+package sistemasdistribuidos;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -46,6 +46,7 @@ public class ClienteThread extends Thread {
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey, Path>();
  
+        System.out.println("Criou a instancia da classe");
         walkAndRegisterDirectories(dir);
     }
  
@@ -63,6 +64,8 @@ public class ClienteThread extends Thread {
      */
     private void walkAndRegisterDirectories(final Path start) throws IOException {
         // register directory and sub-directories
+                System.out.println("rodando o metodo walk and register");
+
         Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -73,6 +76,8 @@ public class ClienteThread extends Thread {
     }
     
     void processEvents() throws IOException {
+                System.out.println("entrou no rpocess events");
+
         for (;;) {
  
             // wait for key to be signalled
@@ -144,10 +149,12 @@ public class ClienteThread extends Thread {
     @Override
     public  void run()  {
         System.out.println("TAMO NO CLIENT THREAD");
-        Path dir = Paths.get("C:\\Users\\davim\\Desktop\\master");
+        Path dir = Paths.get("C:\\Users\\luizg\\Desktop\\master");
         try {
-            new Cliente(dir).processEvents();
-            
+                    System.out.println("acesou o caminho");
+
+            new ClienteThread(dir).processEvents();
+            System.out.println("encerrou o thread");
             
             //--------- PARTE DO SOCKET ----------//
             //1 - Abrir conexÃ£o

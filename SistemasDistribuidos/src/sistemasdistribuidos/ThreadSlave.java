@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sockets.thread;
+package sistemasdistribuidos;
 
 
 import java.io.DataInputStream;
@@ -86,7 +86,7 @@ public class ThreadSlave extends Thread {
       public static void copiarArquivo(String mensagem) {
               String[] caminhosplit = new String[6];
               String caminho = mensagem.toString();
-             caminhosplit = caminho.split("pastatestes");
+             caminhosplit = caminho.split("master");
                 
              
           
@@ -95,7 +95,7 @@ public class ThreadSlave extends Thread {
             String inFileName = caminho;
             
             
-            String baseCaminhoBackup1 = "C:\\Users\\davim\\Desktop\\backup1";
+            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\backup1";
             //String baseCaminhoBackup2 = "C:\\Users\\davim\\Desktop\\backup2";
             String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
            // String caminhoCompleto2 = baseCaminhoBackup2.concat(caminhosplit[1]);
@@ -133,14 +133,14 @@ public class ThreadSlave extends Thread {
         System.out.println(" E O CHILD? : "+mensagem);
          String[] caminhosplit = new String[6];
          String caminho = mensagem.toString();
-         caminhosplit = caminho.split("pastatestes");
+         caminhosplit = caminho.split("master");
                 
              System.out.println("Caminho Split");
              for (int i = 0; i < caminhosplit.length; i++) {
                  System.out.println("->  "+caminhosplit[i]);
         }
              
-            String baseCaminhoBackup1 = "C:\\Users\\davim\\Desktop\\backup1";
+            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\backup1";
           //  String baseCaminhoBackup2 = "C:\\Users\\davim\\Desktop\\backup2";
             String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
            // String caminhoCompleto2 = baseCaminhoBackup2.concat(caminhosplit[1]);

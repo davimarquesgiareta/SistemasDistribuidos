@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sockets.thread;
+package sistemasdistribuidos;
 
 
 
@@ -17,7 +17,7 @@ public class ServerSlave1 {
      
         ServerSocket socketSlave1 = new ServerSocket(54323);
       
-        System.out.println("A porta 54322 foi aberta!");
+        System.out.println("A porta 54323 foi aberta!");
         System.out.println("Servidor esperando receber mensagens de clientes...");
         while (true) {
             //2 - Aguardar solicitações de conexão de clientes 

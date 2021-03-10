@@ -1,4 +1,4 @@
-package sockets.thread;
+package sistemasdistribuidos;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class Servidor {
             ThreadSockets thread = new ThreadSockets(socket);
             thread.start();
             
-              Path diretoriox = Paths.get("C:\\Users\\davim\\Desktop\\master");
+              Path diretoriox = Paths.get("C:\\Users\\luizg\\Desktop\\master");
             ClienteThread clientmaster = new ClienteThread(diretoriox);
             clientmaster.start(); 
             

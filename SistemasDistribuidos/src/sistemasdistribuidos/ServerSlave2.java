@@ -1,5 +1,5 @@
 
-package sockets.thread;
+package sistemasdistribuidos;
 
 
 import java.io.IOException;

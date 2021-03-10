@@ -1,4 +1,4 @@
-package sockets.thread;
+package sistemasdistribuidos;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -92,7 +92,7 @@ public class ThreadSockets extends Thread {
             String inFileName = caminho;
             
             
-            String baseCaminhoBackup1 = "C:\\Users\\davim\\Desktop\\master";
+            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\master";
             
             String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
           
@@ -136,7 +136,7 @@ public class ThreadSockets extends Thread {
                  System.out.println("->  "+caminhosplit[i]);
         }
              
-            String baseCaminhoBackup1 = "C:\\Users\\davim\\Desktop\\master";
+            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\master";
          
             String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
          
