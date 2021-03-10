@@ -1,12 +1,5 @@
 package sistemasdistribuidos;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Path;
@@ -37,35 +30,20 @@ public class ClienteThread extends Thread {
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
 
-    
- 
-    /**
-     * Creates a WatchService and registers the given directory
-     */
     ClienteThread(Path dir) throws IOException {
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey, Path>();
  
-        System.out.println("Criou a instancia da classe");
         walkAndRegisterDirectories(dir);
     }
  
-    /**
-     * Register the given directory with the WatchService; This function will be called by FileVisitor
-     */
-    private void registerDirectory(Path dir) throws IOException 
-    {
+    private void registerDirectory(Path dir) throws IOException {
         WatchKey key = dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
         keys.put(key, dir);
     }
  
-    /**
-     * Register the given directory, and all its sub-directories, with the WatchService.
-     */
     private void walkAndRegisterDirectories(final Path start) throws IOException {
         // register directory and sub-directories
-                System.out.println("rodando o metodo walk and register");
-
         Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -76,11 +54,8 @@ public class ClienteThread extends Thread {
     }
     
     void processEvents() throws IOException {
-                System.out.println("entrou no rpocess events");
-
-        for (;;) {
- 
-            // wait for key to be signalled
+        while (true) {
+             // wait for key to be signalled
             WatchKey key;
             try {
                 key = watcher.take();
@@ -111,7 +86,11 @@ public class ClienteThread extends Thread {
                 // if directory is created, and watching recursively, then register it and its sub-directories
                 if (kind == ENTRY_CREATE) {
                     try {
-                        mandarDiretorio(child, "criar");
+                        sendDirectory(child, "criar", "127.0.0.1", 54323);
+                        sendDirectory(child, "criar", "127.0.0.1", 54324);
+
+//                        mandarDiretorio2(child, "criar");
+
                         if (Files.isDirectory(child)) {
                             walkAndRegisterDirectories(child);
                             
@@ -122,11 +101,17 @@ public class ClienteThread extends Thread {
                 }
                 
                 if (kind == ENTRY_DELETE){
-                  mandarDiretorio(child,"deletar");
+                  sendDirectory(child,"deletar", "127.0.0.1", 54323);
+                  sendDirectory(child,"deletar", "127.0.0.1", 54324);
+
+//                  mandarDiretorio2(child,"deletar");
                 }
                 
                 if (kind == ENTRY_MODIFY){
-                mandarDiretorio(child,"modificar");
+                sendDirectory(child,"modificar", "127.0.0.1", 54323);
+                sendDirectory(child,"modificar", "127.0.0.1", 54324);
+
+//                mandarDiretorio2(child,"modificar");
                 }
             }
                 
@@ -167,34 +152,26 @@ public class ClienteThread extends Thread {
     
     
     
-    public static void mandarDiretorio(Path child , String estado) throws IOException{
+    public static void sendDirectory(Path child , String operation, String ip, int port) throws IOException{
                         System.out.println("o child é : "+child);
-                        System.out.println("o estado é: "+estado);
-                        Socket socket = new Socket("127.0.0.1", 54323);
+                        System.out.println("o estado é: "+operation);
+                        Socket socket = new Socket(ip, port);
                         
                         String diretorio = child.toString();
         
-                        //2 - Definir stream de saÃ­da de dados do cliente
-                        
-                        //************* SAIDAAAASSS ************************
                         DataOutputStream saida = new DataOutputStream(socket.getOutputStream());
-                        saida.writeUTF(diretorio); //Enviar  mensagem em minÃºsculo para o servidor
+                        saida.writeUTF(diretorio);
                         
                         DataOutputStream saida2 = new DataOutputStream(socket.getOutputStream());
-                        saida2.writeUTF(estado); //Enviar  mensagem em minÃºsculo para o servidor
-                        // *************************************************
+                        saida2.writeUTF(operation);
 
-                        //3 - Definir stream de entrada de dados no cliente
-                        //*********** O QUE TA VINDO DE VOLTA DO SERVIDOR ********************
                         DataInputStream entrada = new DataInputStream(socket.getInputStream());
-                        String novaMensagem = entrada.readUTF();//Receber mensagem em maiÃºsculo do servidor
-                        System.out.println(novaMensagem); //Mostrar mensagem em maiÃºsculo no cliente
+                        String novaMensagem = entrada.readUTF();
+                        System.out.println(novaMensagem);
                         
                         DataInputStream entrada2 = new DataInputStream(socket.getInputStream());
-                        String novaMensagem2 = entrada2.readUTF();//Receber mensagem em maiÃºsculo do servidor
-                        System.out.println(novaMensagem2); //Mostrar mensagem em maiÃºsculo no cliente
-                        //***********************************************************************
-                        
+                        String novaMensagem2 = entrada2.readUTF();
+                        System.out.println(novaMensagem2);
                         
                         //4 - Fechar streams de entrada e saÃ­da de dados
                         entrada.close();
@@ -204,7 +181,46 @@ public class ClienteThread extends Thread {
                         
                         //5 - Fechar o socket
                         socket.close();
-                         //--------- FIM PARTE DO SOCKET ----------//
+    }
+    
+    public static void mandarDiretorio2(Path child , String estado) throws IOException{
+                    System.out.println("o child é 2: "+child);
+                    System.out.println("o estado é2: "+estado);
+                    Socket socket = new Socket("127.0.0.1", 54324);
+
+                    String diretorio = child.toString();
+
+                    //2 - Definir stream de saÃ­da de dados do cliente
+
+                    //************* SAIDAAAASSS ************************
+                    DataOutputStream saida = new DataOutputStream(socket.getOutputStream());
+                    saida.writeUTF(diretorio); //Enviar  mensagem em minÃºsculo para o servidor
+
+                    DataOutputStream saida2 = new DataOutputStream(socket.getOutputStream());
+                    saida2.writeUTF(estado); //Enviar  mensagem em minÃºsculo para o servidor
+                    // *************************************************
+
+                    //3 - Definir stream de entrada de dados no cliente
+                    //*********** O QUE TA VINDO DE VOLTA DO SERVIDOR ********************
+                    DataInputStream entrada = new DataInputStream(socket.getInputStream());
+                    String novaMensagem = entrada.readUTF();//Receber mensagem em maiÃºsculo do servidor
+                    System.out.println(novaMensagem); //Mostrar mensagem em maiÃºsculo no cliente
+
+                    DataInputStream entrada2 = new DataInputStream(socket.getInputStream());
+                    String novaMensagem2 = entrada2.readUTF();//Receber mensagem em maiÃºsculo do servidor
+                    System.out.println(novaMensagem2); //Mostrar mensagem em maiÃºsculo no cliente
+                    //***********************************************************************
+
+
+                    //4 - Fechar streams de entrada e saÃ­da de dados
+                    entrada.close();
+                    entrada2.close();
+                    saida.close();
+                    saida2.close();
+
+                    //5 - Fechar o socket
+                    socket.close();
+                     //--------- FIM PARTE DO SOCKET ----------//
     }
 
 }

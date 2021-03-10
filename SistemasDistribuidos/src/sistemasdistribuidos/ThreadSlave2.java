@@ -87,7 +87,7 @@ public class ThreadSlave2 extends Thread {
       public static void copiarArquivo(String mensagem) {
               String[] caminhosplit = new String[6];
               String caminho = mensagem.toString();
-             caminhosplit = caminho.split("pastatestes");
+             caminhosplit = caminho.split("master");
                 
              
           
@@ -97,7 +97,7 @@ public class ThreadSlave2 extends Thread {
             
             
             //String baseCaminhoBackup1 = "C:\\Users\\davim\\Desktop\\backup1";
-            String baseCaminhoBackup2 = "C:\\Users\\davim\\Desktop\\backup2";
+            String baseCaminhoBackup2 = "C:\\Users\\luizg\\Desktop\\backup2";
             //String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
            String caminhoCompleto2 = baseCaminhoBackup2.concat(caminhosplit[1]);
             
@@ -134,7 +134,7 @@ public class ThreadSlave2 extends Thread {
         System.out.println(" E O CHILD? : "+mensagem);
          String[] caminhosplit = new String[6];
          String caminho = mensagem.toString();
-         caminhosplit = caminho.split("pastatestes");
+         caminhosplit = caminho.split("master");
                 
              System.out.println("Caminho Split");
              for (int i = 0; i < caminhosplit.length; i++) {
@@ -142,7 +142,7 @@ public class ThreadSlave2 extends Thread {
         }
              
            // String baseCaminhoBackup1 = "C:\\Users\\davim\\Desktop\\backup1";
-            String baseCaminhoBackup2 = "C:\\Users\\davim\\Desktop\\backup2";
+            String baseCaminhoBackup2 = "C:\\Users\\luizg\\Desktop\\backup2";
           //  String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
             String caminhoCompleto2 = baseCaminhoBackup2.concat(caminhosplit[1]);
             

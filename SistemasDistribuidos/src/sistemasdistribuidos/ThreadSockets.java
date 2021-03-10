@@ -29,7 +29,7 @@ public class ThreadSockets extends Thread {
             //*************** O QUE TA VINDO DO CLIENTE ************
                     DataInputStream entrada = new DataInputStream(socket.getInputStream())) {
                 String mensagem = entrada.readUTF();//Recebendo mensagem em Minúsculo do Cliente
-                //String novaMensagem = mensagem.toUpperCase(); //Convertendo em Maiúsculo
+                
                 entrada2 = new DataInputStream(socket.getInputStream());
                 String mensagem2 = entrada2.readUTF();//Recebendo mensagem em Minúsculo do Cliente
                 // String novaMensagem2 = mensagem2.toUpperCase(); //Convertendo em Maiúsculo

@@ -19,7 +19,7 @@ public class ServerSlave2 {
             System.out.println("Cliente " + socket.getInetAddress().getHostAddress() + " conectado");
             
             //3 - Definir uma thread para cada cliente conectado
-            ThreadSockets thread = new ThreadSockets(socket);
+            ThreadSlave2 thread = new ThreadSlave2(socket);
             thread.start();
         }
     }
