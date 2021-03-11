@@ -29,10 +29,12 @@ import java.util.logging.Logger;
 public class ClienteThread extends Thread {
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
+    private final Path directory;
 
     ClienteThread(Path dir) throws IOException {
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey, Path>();
+        this.directory = dir;
  
         walkAndRegisterDirectories(dir);
     }
@@ -82,7 +84,8 @@ public class ClienteThread extends Thread {
                 //event.kind().name() Ã© a aÃ§Ã£o - CRIAR, DELETE, ATUALIZAR
                 //child Ã© o diretÃ³rio/arquivo 
                 System.out.format("%s %s\n", event.kind().name(), child);
-                
+                System.out.println("Chegou aqui");
+
                 // if directory is created, and watching recursively, then register it and its sub-directories
                 if (kind == ENTRY_CREATE) {
                     try {
@@ -130,15 +133,13 @@ public class ClienteThread extends Thread {
         }
     }
     
-    
     @Override
-    public  void run()  {
-        System.out.println("TAMO NO CLIENT THREAD");
-        Path dir = Paths.get("C:\\Users\\luizg\\Desktop\\master");
-        try {
-                    System.out.println("acesou o caminho");
+    public void run()  {
+        System.out.println("TAMO NO CLIENT THREAD");        
 
-            new ClienteThread(dir).processEvents();
+//        Path dir = Paths.get("C:\\Users\\luizg\\Desktop\\master");
+        try {
+            new ClienteThread(this.directory).processEvents();
             System.out.println("encerrou o thread");
             
             //--------- PARTE DO SOCKET ----------//
@@ -146,8 +147,6 @@ public class ClienteThread extends Thread {
         } catch (IOException ex) {
             Logger.getLogger(ClienteThread.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
     }
     
     
@@ -182,46 +181,4 @@ public class ClienteThread extends Thread {
                         //5 - Fechar o socket
                         socket.close();
     }
-    
-    public static void mandarDiretorio2(Path child , String estado) throws IOException{
-                    System.out.println("o child é 2: "+child);
-                    System.out.println("o estado é2: "+estado);
-                    Socket socket = new Socket("127.0.0.1", 54324);
-
-                    String diretorio = child.toString();
-
-                    //2 - Definir stream de saÃ­da de dados do cliente
-
-                    //************* SAIDAAAASSS ************************
-                    DataOutputStream saida = new DataOutputStream(socket.getOutputStream());
-                    saida.writeUTF(diretorio); //Enviar  mensagem em minÃºsculo para o servidor
-
-                    DataOutputStream saida2 = new DataOutputStream(socket.getOutputStream());
-                    saida2.writeUTF(estado); //Enviar  mensagem em minÃºsculo para o servidor
-                    // *************************************************
-
-                    //3 - Definir stream de entrada de dados no cliente
-                    //*********** O QUE TA VINDO DE VOLTA DO SERVIDOR ********************
-                    DataInputStream entrada = new DataInputStream(socket.getInputStream());
-                    String novaMensagem = entrada.readUTF();//Receber mensagem em maiÃºsculo do servidor
-                    System.out.println(novaMensagem); //Mostrar mensagem em maiÃºsculo no cliente
-
-                    DataInputStream entrada2 = new DataInputStream(socket.getInputStream());
-                    String novaMensagem2 = entrada2.readUTF();//Receber mensagem em maiÃºsculo do servidor
-                    System.out.println(novaMensagem2); //Mostrar mensagem em maiÃºsculo no cliente
-                    //***********************************************************************
-
-
-                    //4 - Fechar streams de entrada e saÃ­da de dados
-                    entrada.close();
-                    entrada2.close();
-                    saida.close();
-                    saida2.close();
-
-                    //5 - Fechar o socket
-                    socket.close();
-                     //--------- FIM PARTE DO SOCKET ----------//
-    }
-
 }
-

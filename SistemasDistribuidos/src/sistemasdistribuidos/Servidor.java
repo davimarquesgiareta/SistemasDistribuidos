@@ -21,8 +21,8 @@ public class Servidor {
             ThreadSockets thread = new ThreadSockets(socket);
             thread.start();
             
-            Path diretoriox = Paths.get("C:\\Users\\luizg\\Desktop\\master");
-            ClienteThread clientmaster = new ClienteThread(diretoriox);
+            Path diretorio = Paths.get("C:\\Users\\luizg\\Desktop\\master");
+            ClienteThread clientmaster = new ClienteThread(diretorio);
             clientmaster.start(); 
        }
            
