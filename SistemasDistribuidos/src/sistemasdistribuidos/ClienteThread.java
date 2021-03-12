@@ -89,8 +89,8 @@ public class ClienteThread extends Thread {
                 // if directory is created, and watching recursively, then register it and its sub-directories
                 if (kind == ENTRY_CREATE) {
                     try {
-                        sendDirectory(child, "criar", "127.0.0.1", 54323);
-                        sendDirectory(child, "criar", "127.0.0.1", 54324);
+                        sendDirectory(child, "criar", "127.0.0.1", 54323, this.directory.toString());
+                        sendDirectory(child, "criar", "127.0.0.1", 54324, this.directory.toString());
 
 //                        mandarDiretorio2(child, "criar");
 
@@ -104,15 +104,15 @@ public class ClienteThread extends Thread {
                 }
                 
                 if (kind == ENTRY_DELETE){
-                  sendDirectory(child,"deletar", "127.0.0.1", 54323);
-                  sendDirectory(child,"deletar", "127.0.0.1", 54324);
+                  sendDirectory(child,"deletar", "127.0.0.1", 54323, this.directory.toString());
+                  sendDirectory(child,"deletar", "127.0.0.1", 54324, this.directory.toString());
 
 //                  mandarDiretorio2(child,"deletar");
                 }
                 
                 if (kind == ENTRY_MODIFY){
-                sendDirectory(child,"modificar", "127.0.0.1", 54323);
-                sendDirectory(child,"modificar", "127.0.0.1", 54324);
+                sendDirectory(child,"modificar", "127.0.0.1", 54323, this.directory.toString());
+                sendDirectory(child,"modificar", "127.0.0.1", 54324, this.directory.toString());
 
 //                mandarDiretorio2(child,"modificar");
                 }
@@ -151,18 +151,23 @@ public class ClienteThread extends Thread {
     
     
     
-    public static void sendDirectory(Path child , String operation, String ip, int port) throws IOException{
+    public static void sendDirectory(Path child , String operation, String ip, int port, String mainDirectory) throws IOException{
                         System.out.println("o child é : "+child);
                         System.out.println("o estado é: "+operation);
                         Socket socket = new Socket(ip, port);
                         
                         String diretorio = child.toString();
+//                        System.out.println(child.getParent().toString());
         
+
                         DataOutputStream saida = new DataOutputStream(socket.getOutputStream());
                         saida.writeUTF(diretorio);
                         
                         DataOutputStream saida2 = new DataOutputStream(socket.getOutputStream());
                         saida2.writeUTF(operation);
+                        
+                        DataOutputStream saida3 = new DataOutputStream(socket.getOutputStream());
+                        saida3.writeUTF(mainDirectory);
 
                         DataInputStream entrada = new DataInputStream(socket.getInputStream());
                         String novaMensagem = entrada.readUTF();

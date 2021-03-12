@@ -15,15 +15,14 @@ public class Servidor {
         System.out.println("A porta 54322 foi aberta!");
         System.out.println("Servidor esperando receber mensagens de clientes...");
 
+        Path diretorio = Paths.get("C:\\Users\\luizg\\Desktop\\master");
+        ClienteThread clientmaster = new ClienteThread(diretorio);
+        clientmaster.start(); 
         while (true) {
             //2 - Aguardar solicitações de conexão de clientes 
             Socket socket = servidorSocket.accept();
             ThreadSockets thread = new ThreadSockets(socket);
             thread.start();
-            
-            Path diretorio = Paths.get("C:\\Users\\luizg\\Desktop\\master");
-            ClienteThread clientmaster = new ClienteThread(diretorio);
-            clientmaster.start(); 
        }
            
     }

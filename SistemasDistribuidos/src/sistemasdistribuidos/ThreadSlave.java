@@ -24,7 +24,9 @@ public class ThreadSlave extends Thread {
     public void run() {
         System.out.println(Thread.currentThread().getName());//Imprimir o nome da Thread
         try {
-            DataInputStream entrada2;
+            DataInputStream entrada2;            
+            DataInputStream entrada3;
+
             DataOutputStream saida;
             
             DataOutputStream saida2;
@@ -35,21 +37,29 @@ public class ThreadSlave extends Thread {
                 //String novaMensagem = mensagem.toUpperCase(); //Convertendo em Maiúsculo
                 entrada2 = new DataInputStream(socket.getInputStream());
                 String mensagem2 = entrada2.readUTF();//Recebendo mensagem em Minúsculo do Cliente
-                // String novaMensagem2 = mensagem2.toUpperCase(); //Convertendo em Maiúsculo
+                
+                entrada3 = new DataInputStream(socket.getInputStream());
+                String mensagem3 = entrada3.readUTF();//Recebendo mensagem em Minúsculo do Cliente
+                System.out.println("mensagem3");
+                System.out.println(mensagem3);
+                
+                System.out.println("mensagem2");
+                System.out.println(mensagem2);
+
                 //*****************************************************
                 
                 if ("criar".equals(mensagem2)){
-                    copiarArquivo(mensagem);
+                    copiarArquivo(mensagem, mensagem3);
                      }  
                 
                 
                 if ("modificar".equals(mensagem2)){
-                    copiarArquivo(mensagem);
+                    copiarArquivo(mensagem, mensagem3);
                      } 
              
                 
                 if ("deletar".equals(mensagem2)){
-                    deletarArquivo(mensagem);
+                    deletarArquivo(mensagem, mensagem3);
                      }   
                 
                 
@@ -83,21 +93,26 @@ public class ThreadSlave extends Thread {
     }
     
     
-      public static void copiarArquivo(String mensagem) {
-              String[] caminhosplit = new String[6];
-              String caminho = mensagem.toString();
-             caminhosplit = caminho.split("master");
+      public static void copiarArquivo(String mensagem, String mainPath) {
+//              String[] caminhosplit = new String[6];
+//              String caminho = mensagem.toString();
+             String caminhosplit = mensagem.toString().replace(mainPath, "");
+//            String caminhosplit2 = mensagem.toString().replace(mainPath, "");
+//            System.out.println("caminhosplit2");
+//            System.out.println(caminhosplit2);
+
+
                 
              
           
         try {
             System.out.println("o famoso child é "+ mensagem);
-            String inFileName = caminho;
+            String inFileName = mensagem.toString();
             
             
             String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\backup1";
             //String baseCaminhoBackup2 = "C:\\Users\\davim\\Desktop\\backup2";
-            String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
+            String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit);
            // String caminhoCompleto2 = baseCaminhoBackup2.concat(caminhosplit[1]);
             
             System.out.println("Caminho 1" + caminhoCompleto1);
@@ -128,30 +143,29 @@ public class ThreadSlave extends Thread {
     }
       
       
-      public static void deletarArquivo (String mensagem){
+      public static void deletarArquivo (String mensagem, String mainPath){
         System.out.println("ENTROU NA DELETANCIA");
         System.out.println(" E O CHILD? : "+mensagem);
-         String[] caminhosplit = new String[6];
-         String caminho = mensagem.toString();
-         caminhosplit = caminho.split("master");
+        String[] caminhosplit = new String[6];
+        String caminho = mensagem.toString();
+        caminhosplit = caminho.split("master");
+        String caminhosplit2 = mensagem.toString().replace(mainPath, "");
+        System.out.println("caminhosplit2");
+        System.out.println(caminhosplit2);
                 
-             System.out.println("Caminho Split");
-             for (int i = 0; i < caminhosplit.length; i++) {
-                 System.out.println("->  "+caminhosplit[i]);
+        System.out.println("Caminho Split");
+        
+        for (int i = 0; i < caminhosplit.length; i++) {
+            System.out.println("->  "+caminhosplit[i]);
         }
              
-            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\backup1";
-          //  String baseCaminhoBackup2 = "C:\\Users\\davim\\Desktop\\backup2";
-            String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
-           // String caminhoCompleto2 = baseCaminhoBackup2.concat(caminhosplit[1]);
-            
-            System.out.println("1 - " + caminhoCompleto1);
-           //  System.out.println("2 - " + caminhoCompleto2);
+        String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\backup1";
+        String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
+
+        System.out.println("1 - " + caminhoCompleto1);
         
         File f1 = new File(caminhoCompleto1);  
-       // File f2 = new File(caminhoCompleto2);  
         f1.delete();
-        //f2.delete();
     }
   
     
