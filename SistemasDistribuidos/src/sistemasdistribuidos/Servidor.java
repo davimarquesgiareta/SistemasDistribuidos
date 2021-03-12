@@ -21,7 +21,7 @@ public class Servidor {
         while (true) {
             //2 - Aguardar solicitações de conexão de clientes 
             Socket socket = servidorSocket.accept();
-            ThreadSockets thread = new ThreadSockets(socket);
+            ThreadSockets thread = new ThreadSockets(socket, "C:\\Users\\luizg\\Desktop\\master");
             thread.start();
        }
            

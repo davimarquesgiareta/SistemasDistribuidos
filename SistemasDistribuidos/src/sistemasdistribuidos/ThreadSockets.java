@@ -14,8 +14,10 @@ import java.nio.file.Path;
 
 public class ThreadSockets extends Thread {
     private Socket socket;
-    public ThreadSockets(Socket s) {
+    protected String path;
+    public ThreadSockets(Socket s, String path) {
         this.socket = s;
+        this.path = path;
     }
 
     public void run() {
@@ -36,17 +38,17 @@ public class ThreadSockets extends Thread {
                 //*****************************************************
                 
                 if ("criar".equals(mensagem2)){
-                    copiarArquivo(mensagem);
+                    copiarArquivo(mensagem, this.path);
                      }  
                 
                 
                 if ("modificar".equals(mensagem2)){
-                    copiarArquivo(mensagem);
+                    copiarArquivo(mensagem, this.path);
                      } 
              
                 
                 if ("deletar".equals(mensagem2)){
-                    deletarArquivo(mensagem);
+                    deletarArquivo(mensagem, this.path);
                      }   
                 
                
@@ -80,7 +82,7 @@ public class ThreadSockets extends Thread {
     }
     
     
-      public static void copiarArquivo(String mensagem) {
+      public static void copiarArquivo(String mensagem, String localPath) {
               String[] caminhosplit = new String[6];
               String caminho = mensagem.toString();
              caminhosplit = caminho.split("pastatestes");
@@ -92,7 +94,8 @@ public class ThreadSockets extends Thread {
             String inFileName = caminho;
             
             
-            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\master";
+//            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\master";
+            String baseCaminhoBackup1 = localPath;
             
             String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
           
@@ -124,7 +127,7 @@ public class ThreadSockets extends Thread {
     }
       
       
-      public static void deletarArquivo (String mensagem){
+      public static void deletarArquivo (String mensagem, String localPath){
         System.out.println("ENTROU NA DELETANCIA");
         System.out.println(" E O CHILD? : "+mensagem);
          String[] caminhosplit = new String[6];
@@ -136,8 +139,8 @@ public class ThreadSockets extends Thread {
                  System.out.println("->  "+caminhosplit[i]);
         }
              
-            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\master";
-         
+//            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\master";
+            String baseCaminhoBackup1 = localPath;
             String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
          
             
