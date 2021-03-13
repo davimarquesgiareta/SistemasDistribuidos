@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Feito por Davi Marques Giareta e Luiz Gustavo Chinelato Setten
  */
 package sistemasdistribuidos;
 
@@ -15,7 +13,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ThreadSlave extends Thread {
-    private Socket socket;
+    private final Socket socket;
     protected String path;
     public ThreadSlave(Socket s, String path) {
         this.socket = s;
@@ -23,6 +21,7 @@ public class ThreadSlave extends Thread {
     }
     
 
+    @Override
     public void run() {
         System.out.println(Thread.currentThread().getName());//Imprimir o nome da Thread
         try {
@@ -76,11 +75,11 @@ public class ThreadSlave extends Thread {
     
     
       public static void copiarArquivo(String mensagem, String mainPath, String localPath) {
-        String caminhosplit = mensagem.toString().replace(mainPath, "");
+        String caminhosplit = mensagem.replace(mainPath, "");
 
         try {
             System.out.println("o famoso child é "+ mensagem);
-            String inFileName = mensagem.toString();
+            String inFileName = mensagem;
 
             String baseCaminhoBackup1 = localPath;
 
@@ -105,7 +104,7 @@ public class ThreadSlave extends Thread {
       
       
       public static void deletarArquivo (String mensagem, String mainPath, String localPath){
-        String caminhosplit2 = mensagem.toString().replace(mainPath, "");
+        String caminhosplit2 = mensagem.replace(mainPath, "");
         String baseCaminhoBackup1 = localPath;
         String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit2);
         

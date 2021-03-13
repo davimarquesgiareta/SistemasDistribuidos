@@ -1,3 +1,6 @@
+/*
+ * Feito por Davi Marques Giareta e Luiz Gustavo Chinelato Setten
+ */
 package sistemasdistribuidos;
 
 import java.io.DataInputStream;
@@ -25,19 +28,15 @@ public class ThreadSockets extends Thread {
             DataOutputStream saida;
             
             DataOutputStream saida2;
-            try ( //1 - Definir stream de entrada de dados no servidor
-            //*************** O QUE TA VINDO DO CLIENTE ************
-                DataInputStream entrada = new DataInputStream(socket.getInputStream())) {
-                String mensagem = entrada.readUTF();//Recebendo mensagem em Minúsculo do Cliente
+            try (DataInputStream entrada = new DataInputStream(socket.getInputStream())) {
+                String mensagem = entrada.readUTF();
                 
                 entrada2 = new DataInputStream(socket.getInputStream());
-                String mensagem2 = entrada2.readUTF();//Recebendo mensagem em Minúsculo do Cliente
-                // String novaMensagem2 = mensagem2.toUpperCase(); //Convertendo em Maiúsculo
+                String mensagem2 = entrada2.readUTF();
+
                 entrada3 = new DataInputStream(socket.getInputStream());
-                String mensagem3 = entrada3.readUTF();//Recebendo mensagem em Minúsculo do Cliente
-                System.out.println("mensagem3");
-                System.out.println(mensagem3);
-                //*****************************************************
+                String mensagem3 = entrada3.readUTF();
+
                 
                 if ("criar".equals(mensagem2)){
                     copiarArquivo(mensagem, mensagem3, this.path);
@@ -52,51 +51,32 @@ public class ThreadSockets extends Thread {
                 if ("deletar".equals(mensagem2)){
                     deletarArquivo(mensagem, mensagem3, this.path);
                      }   
-                
-               
 
-
-//2 - Definir stream de saída de dados do servidor
-                //************** VOLTANDO PARA O CLIENTE ************************
                 saida = new DataOutputStream(socket.getOutputStream());
-                saida.writeUTF(mensagem); //Enviando mensagem em Maiúsculo para Cliente
+                saida.writeUTF(mensagem);
                 saida2 = new DataOutputStream(socket.getOutputStream());
-                saida2.writeUTF(mensagem2); //Enviando mensagem em Maiúsculo para Cliente
-                //***************************************************************
-                
-                
-                
-                //3 - Fechar streams de entrada e saída de dados
-            } //Recebendo mensagem em Minúsculo do Cliente
-            //String novaMensagem = mensagem.toUpperCase(); //Convertendo em Maiúsculo
+                saida2.writeUTF(mensagem2);
+
+            }
             entrada2.close();
             saida.close();
             saida2.close();
             
-            //4 - Fechar socket de comunicação
             socket.close();
         } catch (IOException ioe) {
             System.out.println("Erro: " + ioe.toString());
         }
-        
-        
-        
+   
     }
     
     
       public static void copiarArquivo(String mensagem, String mainPath, String localPath) {
-//              String[] caminhosplit = new String[6];
-//              String caminho = mensagem.toString();
-//             caminhosplit = caminho.split("pastatestes");
-              String caminhosplit = mensagem.toString().replace(mainPath, "");  
+        String caminhosplit = mensagem.replace(mainPath, "");  
              
-          
         try {
             System.out.println("o famoso child é "+ mensagem);
-            String inFileName = mensagem.toString();
-            
-            
-//            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\master";
+            String inFileName = mensagem;
+
             String baseCaminhoBackup1 = localPath;
             
             String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit);
@@ -107,56 +87,30 @@ public class ThreadSockets extends Thread {
             String outFileName = caminhoCompleto1;
           
 
-            FileInputStream in = new FileInputStream(inFileName);
-            FileOutputStream out = new FileOutputStream(outFileName);
-           
-            
-            
-            byte[] buf = new byte[1024];
-            int len;
-
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-               
+            try (FileInputStream in = new FileInputStream(inFileName); FileOutputStream out = new FileOutputStream(outFileName)) {
+                byte[] buf = new byte[1024];
+                int len;
+                
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                    
+                }
+                
             }
-
-            out.close();
-          
-            in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-      
-      
+
       public static void deletarArquivo (String mensagem, String mainPath, String localPath){
-//        System.out.println("ENTROU NA DELETANCIA");
-//        System.out.println(" E O CHILD? : "+mensagem);
-//         String[] caminhosplit = new String[6];
-//         String caminho = mensagem.toString();
-//         caminhosplit = caminho.split("pastatestes");
-                String caminhosplit = mensagem.toString().replace(mainPath, "");  
-//             System.out.println("Caminho Split");
-//             for (int i = 0; i < caminhosplit.length; i++) {
-//                 System.out.println("->  "+caminhosplit[i]);
-//        }
-             
-//            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\master";
-            String baseCaminhoBackup1 = localPath;
-            String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit);
-         
-            
-            System.out.println("1 - " + caminhoCompleto1);
-        
-        
+        String caminhosplit = mensagem.replace(mainPath, "");  
+
+        String baseCaminhoBackup1 = localPath;
+        String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit);
+
         File f1 = new File(caminhoCompleto1);  
       
         f1.delete();
-        
     }
-  
-    
-    
-    
-    
+ 
 }

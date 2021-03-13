@@ -1,3 +1,6 @@
+/*
+ * Feito por Davi Marques Giareta e Luiz Gustavo Chinelato Setten
+ */
 package sistemasdistribuidos;
 
 import java.io.*;
@@ -56,7 +59,6 @@ public class ClienteThread extends Thread {
     
     void processEvents() throws IOException {
         while (true) {
-             // wait for key to be signalled
             WatchKey key;
             try {
                 key = watcher.take();
@@ -74,7 +76,6 @@ public class ClienteThread extends Thread {
                 @SuppressWarnings("rawtypes")
                 WatchEvent.Kind kind = event.kind();
  
-                // Context for directory entry event is the file name of entry
                 @SuppressWarnings("unchecked")
                 Path name = ((WatchEvent<Path>)event).context();
                 Path child = dir.resolve(name);
@@ -92,7 +93,7 @@ public class ClienteThread extends Thread {
                             
                         }
                     } catch (IOException x) {
-                        // do something useful
+
                     }
                 }
                 
@@ -108,16 +109,12 @@ public class ClienteThread extends Thread {
 
                 }
             }
-                
- 
-            // reset key and remove from set if directory no longer accessible
+
             boolean valid = key.reset();
             if (!valid) {
                 keys.remove(key);
-                
-                // all directories are inaccessible
+
                 if (keys.isEmpty()) {
-                   
                     break;
                 }
             }
@@ -128,13 +125,10 @@ public class ClienteThread extends Thread {
     public void run()  {
         System.out.println("TAMO NO CLIENT THREAD");        
 
-//        Path dir = Paths.get("C:\\Users\\luizg\\Desktop\\master");
         try {
             new ClienteThread(this.directory, this.ip1, this.port1, this.ip2, this.port2).processEvents();
             System.out.println("encerrou o thread");
             
-            //--------- PARTE DO SOCKET ----------//
-            //1 - Abrir conexÃ£o
         } catch (IOException ex) {
             Logger.getLogger(ClienteThread.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -148,8 +142,6 @@ public class ClienteThread extends Thread {
                         Socket socket = new Socket(ip, port);
                         
                         String diretorio = child.toString();
-//                        System.out.println(child.getParent().toString());
-        
 
                         DataOutputStream saida = new DataOutputStream(socket.getOutputStream());
                         saida.writeUTF(diretorio);
@@ -168,13 +160,11 @@ public class ClienteThread extends Thread {
                         String novaMensagem2 = entrada2.readUTF();
                         System.out.println(novaMensagem2);
                         
-                        //4 - Fechar streams de entrada e saÃ­da de dados
                         entrada.close();
                         entrada2.close();
                         saida.close();
                         saida2.close();
                         
-                        //5 - Fechar o socket
                         socket.close();
     }
 }
