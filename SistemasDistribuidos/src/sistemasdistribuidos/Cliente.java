@@ -34,16 +34,21 @@ import java.util.Map;
 public class Cliente {
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
-
+    private final Path directory;
+    private final String ip;
+    private final int port;
     
  
     /**
      * Creates a WatchService and registers the given directory
      */
-    Cliente(Path dir) throws IOException {
+    Cliente(Path dir, String ip, int port) throws IOException {
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey, Path>();
- 
+        this.directory = dir;
+        this.ip = ip;
+        this.port = port;
+
         walkAndRegisterDirectories(dir);
     }
  
@@ -104,10 +109,9 @@ public class Cliente {
                 // if directory is created, and watching recursively, then register it and its sub-directories
                 if (kind == ENTRY_CREATE) {
                     try {
-                        mandarDiretorio(child, "criar");
+                        mandarDiretorio(child, "criar", this.directory.toString(), this.ip, this.port);
                         if (Files.isDirectory(child)) {
                             walkAndRegisterDirectories(child);
-                            
                         }
                     } catch (IOException x) {
                         // do something useful
@@ -115,11 +119,11 @@ public class Cliente {
                 }
                 
                 if (kind == ENTRY_DELETE){
-                  mandarDiretorio(child,"deletar");
+                  mandarDiretorio(child,"deletar", this.directory.toString(), this.ip, this.port);
                 }
                 
                 if (kind == ENTRY_MODIFY){
-                mandarDiretorio(child,"modificar");
+                mandarDiretorio(child,"modificar", this.directory.toString(), this.ip, this.port);
                 }
             }
                 
@@ -139,24 +143,15 @@ public class Cliente {
     }
     
     
-    public static void main(String[] args) throws IOException {
-        
+    public static void main(String[] args) throws IOException {       
         Path dir = Paths.get("C:\\Users\\luizg\\Desktop\\pastatestes");
-        new Cliente(dir).processEvents();
-
-
-        //--------- PARTE DO SOCKET ----------//
-       //1 - Abrir conexÃ£o
-        
-        
+        new Cliente(dir, "127.0.0.1", 54322).processEvents();
     }
-    
-    
-    
-    public static void mandarDiretorio(Path child , String estado) throws IOException{
+
+    public static void mandarDiretorio(Path child , String estado, String mainDirectory, String ip, int port) throws IOException{
                         System.out.println("o child é : "+child);
                         System.out.println("o estado é: "+estado);
-                        Socket socket = new Socket("127.0.0.1", 54322);
+                        Socket socket = new Socket(ip, port);
                         
                         String diretorio = child.toString();
         
@@ -168,6 +163,9 @@ public class Cliente {
                         
                         DataOutputStream saida2 = new DataOutputStream(socket.getOutputStream());
                         saida2.writeUTF(estado); //Enviar  mensagem em minÃºsculo para o servidor
+                        
+                        DataOutputStream saida3 = new DataOutputStream(socket.getOutputStream());
+                        saida3.writeUTF(mainDirectory);
                         // *************************************************
 
                         //3 - Definir stream de entrada de dados no cliente

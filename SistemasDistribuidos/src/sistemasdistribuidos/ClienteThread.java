@@ -2,20 +2,12 @@ package sistemasdistribuidos;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import static java.nio.file.StandardWatchEventKinds.*;
- 
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
@@ -30,12 +22,19 @@ public class ClienteThread extends Thread {
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
     private final Path directory;
+    private final String ip1;
+    private final int port1;
+    private final String ip2; 
+    private final int port2;
 
-    ClienteThread(Path dir) throws IOException {
+    ClienteThread(Path dir, String ip1, int port1,String ip2, int port2) throws IOException {
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey, Path>();
         this.directory = dir;
- 
+        this.ip1 = ip1;
+        this.port1 = port1;
+        this.ip2 = ip2;
+        this.port2 = port2;
         walkAndRegisterDirectories(dir);
     }
  
@@ -79,20 +78,14 @@ public class ClienteThread extends Thread {
                 @SuppressWarnings("unchecked")
                 Path name = ((WatchEvent<Path>)event).context();
                 Path child = dir.resolve(name);
- 
-                // print out event
-                //event.kind().name() Ã© a aÃ§Ã£o - CRIAR, DELETE, ATUALIZAR
-                //child Ã© o diretÃ³rio/arquivo 
+
                 System.out.format("%s %s\n", event.kind().name(), child);
                 System.out.println("Chegou aqui");
 
-                // if directory is created, and watching recursively, then register it and its sub-directories
                 if (kind == ENTRY_CREATE) {
                     try {
-                        sendDirectory(child, "criar", "127.0.0.1", 54323, this.directory.toString());
-                        sendDirectory(child, "criar", "127.0.0.1", 54324, this.directory.toString());
-
-//                        mandarDiretorio2(child, "criar");
+                        sendDirectory(child, "criar", ip1, port1, this.directory.toString());
+                        sendDirectory(child, "criar", ip2, port2, this.directory.toString());
 
                         if (Files.isDirectory(child)) {
                             walkAndRegisterDirectories(child);
@@ -104,17 +97,15 @@ public class ClienteThread extends Thread {
                 }
                 
                 if (kind == ENTRY_DELETE){
-                  sendDirectory(child,"deletar", "127.0.0.1", 54323, this.directory.toString());
-                  sendDirectory(child,"deletar", "127.0.0.1", 54324, this.directory.toString());
+                  sendDirectory(child,"deletar", ip1, port1, this.directory.toString());
+                  sendDirectory(child,"deletar", ip2, port2, this.directory.toString());
 
-//                  mandarDiretorio2(child,"deletar");
                 }
                 
                 if (kind == ENTRY_MODIFY){
-                sendDirectory(child,"modificar", "127.0.0.1", 54323, this.directory.toString());
-                sendDirectory(child,"modificar", "127.0.0.1", 54324, this.directory.toString());
+                sendDirectory(child,"modificar", ip1, port1, this.directory.toString());
+                sendDirectory(child,"modificar", ip2, port2, this.directory.toString());
 
-//                mandarDiretorio2(child,"modificar");
                 }
             }
                 
@@ -139,7 +130,7 @@ public class ClienteThread extends Thread {
 
 //        Path dir = Paths.get("C:\\Users\\luizg\\Desktop\\master");
         try {
-            new ClienteThread(this.directory).processEvents();
+            new ClienteThread(this.directory, this.ip1, this.port1, this.ip2, this.port2).processEvents();
             System.out.println("encerrou o thread");
             
             //--------- PARTE DO SOCKET ----------//

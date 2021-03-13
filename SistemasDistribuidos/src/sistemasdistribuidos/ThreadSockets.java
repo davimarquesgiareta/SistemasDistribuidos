@@ -7,48 +7,50 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.file.Path;
-
-
-
 
 public class ThreadSockets extends Thread {
-    private Socket socket;
+    private final Socket socket;
     protected String path;
     public ThreadSockets(Socket s, String path) {
         this.socket = s;
         this.path = path;
     }
 
+    @Override
     public void run() {
         System.out.println(Thread.currentThread().getName());//Imprimir o nome da Thread
         try {
             DataInputStream entrada2;
+            DataInputStream entrada3;
             DataOutputStream saida;
             
             DataOutputStream saida2;
             try ( //1 - Definir stream de entrada de dados no servidor
             //*************** O QUE TA VINDO DO CLIENTE ************
-                    DataInputStream entrada = new DataInputStream(socket.getInputStream())) {
+                DataInputStream entrada = new DataInputStream(socket.getInputStream())) {
                 String mensagem = entrada.readUTF();//Recebendo mensagem em Minúsculo do Cliente
                 
                 entrada2 = new DataInputStream(socket.getInputStream());
                 String mensagem2 = entrada2.readUTF();//Recebendo mensagem em Minúsculo do Cliente
                 // String novaMensagem2 = mensagem2.toUpperCase(); //Convertendo em Maiúsculo
+                entrada3 = new DataInputStream(socket.getInputStream());
+                String mensagem3 = entrada3.readUTF();//Recebendo mensagem em Minúsculo do Cliente
+                System.out.println("mensagem3");
+                System.out.println(mensagem3);
                 //*****************************************************
                 
                 if ("criar".equals(mensagem2)){
-                    copiarArquivo(mensagem, this.path);
+                    copiarArquivo(mensagem, mensagem3, this.path);
                      }  
                 
                 
                 if ("modificar".equals(mensagem2)){
-                    copiarArquivo(mensagem, this.path);
+                    copiarArquivo(mensagem, mensagem3, this.path);
                      } 
              
                 
                 if ("deletar".equals(mensagem2)){
-                    deletarArquivo(mensagem, this.path);
+                    deletarArquivo(mensagem, mensagem3, this.path);
                      }   
                 
                
@@ -82,22 +84,22 @@ public class ThreadSockets extends Thread {
     }
     
     
-      public static void copiarArquivo(String mensagem, String localPath) {
-              String[] caminhosplit = new String[6];
-              String caminho = mensagem.toString();
-             caminhosplit = caminho.split("pastatestes");
-                
+      public static void copiarArquivo(String mensagem, String mainPath, String localPath) {
+//              String[] caminhosplit = new String[6];
+//              String caminho = mensagem.toString();
+//             caminhosplit = caminho.split("pastatestes");
+              String caminhosplit = mensagem.toString().replace(mainPath, "");  
              
           
         try {
             System.out.println("o famoso child é "+ mensagem);
-            String inFileName = caminho;
+            String inFileName = mensagem.toString();
             
             
 //            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\master";
             String baseCaminhoBackup1 = localPath;
             
-            String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
+            String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit);
           
             
             System.out.println("Caminho 1" + caminhoCompleto1);
@@ -127,21 +129,21 @@ public class ThreadSockets extends Thread {
     }
       
       
-      public static void deletarArquivo (String mensagem, String localPath){
-        System.out.println("ENTROU NA DELETANCIA");
-        System.out.println(" E O CHILD? : "+mensagem);
-         String[] caminhosplit = new String[6];
-         String caminho = mensagem.toString();
-         caminhosplit = caminho.split("pastatestes");
-                
-             System.out.println("Caminho Split");
-             for (int i = 0; i < caminhosplit.length; i++) {
-                 System.out.println("->  "+caminhosplit[i]);
-        }
+      public static void deletarArquivo (String mensagem, String mainPath, String localPath){
+//        System.out.println("ENTROU NA DELETANCIA");
+//        System.out.println(" E O CHILD? : "+mensagem);
+//         String[] caminhosplit = new String[6];
+//         String caminho = mensagem.toString();
+//         caminhosplit = caminho.split("pastatestes");
+                String caminhosplit = mensagem.toString().replace(mainPath, "");  
+//             System.out.println("Caminho Split");
+//             for (int i = 0; i < caminhosplit.length; i++) {
+//                 System.out.println("->  "+caminhosplit[i]);
+//        }
              
 //            String baseCaminhoBackup1 = "C:\\Users\\luizg\\Desktop\\master";
             String baseCaminhoBackup1 = localPath;
-            String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit[1]);
+            String caminhoCompleto1 = baseCaminhoBackup1.concat(caminhosplit);
          
             
             System.out.println("1 - " + caminhoCompleto1);
